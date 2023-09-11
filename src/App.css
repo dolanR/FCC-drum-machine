@@ -1,0 +1,108 @@
+html {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: gray;
+}
+
+.flex {
+    display: flex;
+}
+
+.grid {
+    display: grid;
+    gap: 10px;
+}
+
+#drum-machine {
+    width: 600px;
+    height: 300px;
+    background-color: darkgray;
+    border: 5px solid gold;
+    align-items: center;
+    justify-content: center;
+}
+
+#drum-buttons {
+    width: 300px;
+    height: 240px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.drum-pad {
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 2px 3px 3px 0.1px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bolder;
+}
+
+#display {
+    width: 45%;
+    height: 80%;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+#power-button {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: large;
+}
+
+.switch {
+    position: relative;
+    width: 60px;
+    height: 32px;
+    background-color: white;
+}
+
+.switch input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(28px);
+}
