@@ -1,74 +1,87 @@
 import './App.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+const buttonArray = [
+	{ letter: 'Q', id: 'a1', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3', name: 'Heater 1' },
+	{ letter: 'W', id: 'a2', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3', name: 'Heater 2' },
+	{ letter: 'E', id: 'a3', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3', name: 'Heater 3' },
+	{ letter: 'A', id: 'a4', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3', name: 'Heater 4' },
+	{ letter: 'S', id: 'a5', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3', name: 'Clap' },
+	{ letter: 'D', id: 'a6', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3', name: 'Open HH' },
+	{ letter: 'Z', id: 'a7', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3', name: 'Kick n Hat' },
+	{ letter: 'X', id: 'a8', audio: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3', name: 'Kick' },
+	{ letter: 'C', id: 'a9', audio: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3', name: 'Closed HH' },
+];
 
 function App() {
-  const getAudio = (string) => {
-    let temp = document.getElementById(string);
-    let url = temp.getAttribute('src');
-    let audio = new Audio(url);
-    return audio;
-  };
-  
-  return (
-    <div id="drum-machine" class="flex">
-      <div id="drum-buttons" class='grid'>
-        <div class='drum-pad flex' id='heater-1' onClick={() => getAudio('a1').play()}>Q
-        <audio class="clip" id="Q">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3" id="a1"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='heater-2' onClick={() => getAudio('a2').play()}>W
-        <audio class="clip" id="W">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3" id="a2"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='heater-3' onClick={() => getAudio('a3').play()}>E
-        <audio class="clip" id="E">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3" id="a3"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='heater-4' onClick={() => getAudio('a4').play()}>A
-        <audio class="clip" id="A">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3" id="a4"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='clap' onClick={() => getAudio('a5').play()}>S
-        <audio class="clip" id="S">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3" id="a5"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='open-hh' onClick={() => getAudio('a6').play()}>D
-        <audio class="clip" id="D">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3" id="a6"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='kick-n-hat' onClick={() => getAudio('a7').play()}>Z
-        <audio class="clip" id="Z">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3" id="a7"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='kick' onClick={() => getAudio('a8').play()}>X
-        <audio class="clip" id="X">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3" id="a8"></source>
-        </audio>
-        </div>
-        <div class='drum-pad flex' id='closed-hh' onClick={() => getAudio('a9').play()}>C
-        <audio class="clip" id="C">
-          <source src="https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3" id="a9"></source>
-        </audio>
-        </div>
-      </div>
-      <div id="display" class="flex">
-        <div id="power-button" class="flex"> 
-          <p1>Power</p1>
-          <label class="switch">
-            <input type="checkbox" />
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-    </div>
-  );
+	const [isPowerOn, setIsPowerOn] = useState(false);
+	const [playedSound, setPlayedSound] = useState('');
+
+	useEffect(() => {
+		function handleKeyPress(e) {
+			if (!isPowerOn) {
+				return;
+			}
+			let tempKey = e.key.toUpperCase();
+			for (let i = 0; i < buttonArray.length; i++) {
+				if (tempKey === buttonArray[i].letter) {
+					setPlayedSound(buttonArray[i].name);
+					playAudio(buttonArray[i].audio);
+					break;
+				}
+			}
+		}
+
+		document.addEventListener('keydown', handleKeyPress);
+
+		return function cleanup() {
+			document.removeEventListener('keydown', handleKeyPress);
+		};
+	}, [isPowerOn, playedSound]);
+
+	const playAudio = (url) => {
+		const audio = new Audio(url);
+		audio.play();
+	};
+
+	return (
+		<div id='drum-machine' className='flex'>
+			<div id='drum-buttons' className='grid'>
+				{buttonArray.map((button, index) => {
+					return (
+						<div
+							className='drum-pad flex'
+							key={index}
+							id={button.id}
+							onClick={() => isPowerOn && playAudio(button.audio) & setPlayedSound(button.name)}
+						>
+							{button.letter}
+							<audio className='clip' id={button.letter}>
+								<source src={button.audio} id={button.id}></source>
+							</audio>
+						</div>
+					);
+				})}
+			</div>
+			<div id='display' className='flex'>
+				<div id='power-button' className='flex'>
+					<p1>Power</p1>
+					<label className='switch'>
+						<input
+							type='checkbox'
+							onChange={() => {
+								setIsPowerOn((prev) => !prev);
+							}}
+						/>
+						<span className='slider'></span>
+					</label>
+				</div>
+				<div id='played-sound' className='flex'>
+					{playedSound}
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default App;
